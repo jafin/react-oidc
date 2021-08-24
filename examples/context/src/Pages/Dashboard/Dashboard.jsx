@@ -22,7 +22,9 @@ const Dashboard = () => {
           Hello {profile.given_name} {profile.family_name}
         </span>
       </p>
-      <button onClick={logout}>logout</button>
+      <button type="button" onClick={logout}>
+        Logout
+      </button>
     </div>
   );
 };

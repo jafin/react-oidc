@@ -47,12 +47,18 @@ const Header = () => {
                 HOC Protected
               </Link>
             </li>
-            <button onClick={logout}>logout</button>
+            <button type="button" onClick={logout}>
+              Logout
+            </button>
           </ul>
         ) : (
           <>
-            <button onClick={login}>login</button>
-            <button onClick={signinSilent}>login - Silent - </button>
+            <button type="button" onClick={login}>
+              Login
+            </button>
+            <button type="button" onClick={signinSilent}>
+              Login - Silent -{' '}
+            </button>
           </>
         )}
       </div>

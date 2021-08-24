@@ -1,7 +1,7 @@
 {
   "name": "@axa-fr/react-oidc-context-demo",
   "version": "3.1.7",
-  "description": "Demo how to use react oidc redux",
+  "description": "Demo how to use react oidc context",
   "private": true,
   "keywords": [],
   "main": "src/index.js",
