@@ -474,6 +474,7 @@ const handleFetch = async (event:FetchEvent) => {
                         integrity: clonedRequest.integrity,
                     }).then(hideTokens(currentDatabase));
                 }
+                return undefined;
             });
             response.then(r => {
                 if (r !== undefined) {

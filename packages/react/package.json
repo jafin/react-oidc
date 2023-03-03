@@ -38,6 +38,7 @@
     "clean": "rimraf dist",
     "postinstall": "node ./bin/copy.js",
     "build:service-worker": "tsc --build \"./service_worker/tsconfig.json\" && copyfiles -f ./service_worker/OidcTrustedDomains.js ./dist",
+    "build:t": "tsc -p ./service_worker/tsconfig.json && vite build ./service_worker --config ./service_worker/vite.config.js",
     "prepare": "npm run clean && tsc --build \"./tsconfig.json\" && npm run build:service-worker",
     "lint": "eslint src"
   },
@@ -69,7 +70,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "6.3.0",
     "react-scripts": "5.0.1",
-    "typescript": "4.8.2"
+    "typescript": "4.8.2",
+    "vite": "^4.1.4"
   },
   "license": "MIT",
   "publishConfig": {
