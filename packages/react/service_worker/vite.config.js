@@ -6,6 +6,11 @@ export default defineConfig({
   plugins: [dts({
     insertTypesEntry: true,
   })],
+  test: {
+    coverage: {
+        provider: 'c8'
+    }
+  },
   build: {
     sourcemap: true,
     lib: {

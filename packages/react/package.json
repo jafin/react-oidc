@@ -37,6 +37,7 @@
     "eject": "react-scripts eject",
     "clean": "rimraf dist",
     "postinstall": "node ./bin/copy.js",
+    "test:sw": "vitest --root ./service_worker --coverage",
     "build:service-worker": "tsc --build \"./service_worker/tsconfig.json\" && copyfiles -f ./service_worker/OidcTrustedDomains.js ./dist",
     "build:t": "tsc -p ./service_worker/tsconfig.json && vite build ./service_worker --config ./service_worker/vite.config.js",
     "prepare": "npm run clean && tsc --build \"./tsconfig.json\" && npm run build:service-worker",
@@ -56,6 +57,7 @@
     "@types/react": "^18.0.21",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
+    "@vitest/coverage-c8": "^0.29.2",
     "bootstrap": "4.6.1",
     "copyfiles": "2.4.1",
     "cross-env": "^7.0.3",
@@ -71,7 +73,8 @@
     "react-router-dom": "6.3.0",
     "react-scripts": "5.0.1",
     "typescript": "4.8.2",
-    "vite": "^4.1.4"
+    "vite": "^4.1.4",
+    "vitest": "^0.29.2"
   },
   "license": "MIT",
   "publishConfig": {
