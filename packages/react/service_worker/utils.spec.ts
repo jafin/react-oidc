@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { Tokens } from './types';
+import { Tokens, Database } from './types';
 import {
   checkDomain,
   countLetter,
+  getCurrentDatabaseDomain,
   isTokensValid,
   parseJwt,
   serializeHeaders,
+  sleep,
 } from './utils';
 
 const createToken = (expires: number, issued_at: number): Tokens => {
@@ -105,6 +107,47 @@ describe('utils', () => {
     it('will return void when endpoint is falsy', () => {
       const result = () => checkDomain(['https://securesite.com:3000'], '');
       expect(result()).toBeUndefined();
+    });
+  });
+
+  it('can sleep', async ()=> {
+    const start = currentTimeUnixSeconds();
+    const sleepInSecs = 0.5;
+    await sleep(sleepInSecs * 1000);
+    const end = currentTimeUnixSeconds();
+    expect(end - start).toBeGreaterThanOrEqual(sleepInSecs);
+  });
+
+  describe('getCurrentDomainDomain', () => {
+
+    it('can get current database domain', () => {
+
+      let trustedDomains = {
+        default:["https://demo.duendesoftware.com", "https://kdhttps.auth0.com"],
+      }
+
+      const database: Database = {
+        default: {
+          configurationName: 'default',
+          tokens: createToken(currentTimeUnixSeconds() + 60, currentTimeUnixSeconds() -120),
+          status: 'LOGGED',
+          state: null,
+          codeVerifier: null,
+          nonce: { nonce: 'nonce' },
+          oidcServerConfiguration: {
+            revocationEndpoint: 'https://demo.duendesoftware.com/revoke',
+            issuer: 'identityserver',
+            authorizationEndpoint: 'https://demo.duendesoftware.com/auth',
+            tokenEndpoint: 'https://demo.duendesoftware.com/token',
+            userInfoEndpoint: 'https://demo.duendesoftware.com/userinfo',
+          },
+          oidcConfiguration: undefined,
+          sessionState: null,
+          items: undefined,
+        },
+      };
+      const result = getCurrentDatabaseDomain(database, 'https://demo.duendesoftware.com/userinfo',trustedDomains);
+      expect(result?.configurationName).toBe('default');
     });
   });
 });

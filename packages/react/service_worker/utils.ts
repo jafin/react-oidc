@@ -1,5 +1,19 @@
-import { scriptFilename } from './constants';
-import { Domain, FetchHeaders, Tokens } from './types';
+import {
+  acceptAnyDomainToken,
+  openidWellknownUrlEndWith,
+  scriptFilename,
+} from './constants';
+import {
+  Database,
+  Domain,
+  FetchHeaders,
+  OidcConfig,
+  Tokens,
+  TrustedDomains,
+} from './types';
+
+declare let trustedDomains: TrustedDomains;
+
 const serializeHeaders = (headers: Headers) => {
   const headersObj: Record<string, string> = {};
   for (const key of (headers as FetchHeaders).keys()) {
@@ -61,16 +75,81 @@ const checkDomain = (domains: Domain[], endpoint: string) => {
   }
 };
 
-const computeTimeLeft = (refreshTimeBeforeTokensExpirationInSecond: number, expiresAt: number) => {
+const computeTimeLeft = (
+  refreshTimeBeforeTokensExpirationInSecond: number,
+  expiresAt: number
+) => {
   const currentTimeUnixSecond = new Date().getTime() / 1000;
-  return Math.round(((expiresAt - refreshTimeBeforeTokensExpirationInSecond) - currentTimeUnixSecond));
+  return Math.round(
+    expiresAt -
+      refreshTimeBeforeTokensExpirationInSecond -
+      currentTimeUnixSecond
+  );
 };
 
 const isTokensValid = (tokens: Tokens | null) => {
   if (!tokens) {
-      return false;
+    return false;
   }
   return computeTimeLeft(0, tokens.expiresAt) > 0;
 };
 
-export { serializeHeaders, countLetter, parseJwt, checkDomain, isTokensValid };
+const getCurrentDatabaseDomain = (database: Database, url: string, trustedDomains: TrustedDomains) => {
+  if (url.endsWith(openidWellknownUrlEndWith)) {
+    return null;
+  }
+  for (const [key, currentDatabase] of Object.entries<OidcConfig>(database)) {
+    const oidcServerConfiguration = currentDatabase.oidcServerConfiguration;
+
+    if (!oidcServerConfiguration) {
+      continue;
+    }
+
+    if (
+      oidcServerConfiguration.tokenEndpoint &&
+      url === oidcServerConfiguration.tokenEndpoint
+    ) {
+      continue;
+    }
+    if (
+      oidcServerConfiguration.revocationEndpoint &&
+      url === oidcServerConfiguration.revocationEndpoint
+    ) {
+      continue;
+    }
+
+    const domainsToSendTokens = oidcServerConfiguration.userInfoEndpoint
+      ? [oidcServerConfiguration.userInfoEndpoint, ...trustedDomains[key]]
+      : [...trustedDomains[key]];
+
+    let hasToSendToken = false;
+    if (domainsToSendTokens.find((f) => f === acceptAnyDomainToken)) {
+      hasToSendToken = true;
+    } else {
+      for (let i = 0; i < domainsToSendTokens.length; i++) {
+        let domain = domainsToSendTokens[i];
+
+        if (typeof domain === 'string') {
+          domain = new RegExp(`^${domain}`);
+        }
+        if (domain.test?.(url)) {
+          hasToSendToken = true;
+          break;
+        }
+      }
+    }
+
+    if (hasToSendToken) {
+      if (!currentDatabase.tokens) {
+        return null;
+      }
+      return currentDatabase;
+    }
+  }
+
+  return null;
+};
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export { serializeHeaders, countLetter, parseJwt, checkDomain, isTokensValid, getCurrentDatabaseDomain, sleep };

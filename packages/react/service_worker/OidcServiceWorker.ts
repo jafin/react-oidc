@@ -1,6 +1,6 @@
 import { acceptAnyDomainToken, scriptFilename } from './constants';
 import { TrustedDomains, Database, Tokens, OidcServerConfiguration, OidcConfig, OidcConfiguration, MessageEventData } from './types';
-import {checkDomain, countLetter, isTokensValid, parseJwt, serializeHeaders} from './utils';
+import {checkDomain, countLetter, getCurrentDatabaseDomain, isTokensValid, parseJwt, serializeHeaders, sleep} from './utils';
 const _self = self as ServiceWorkerGlobalScope & typeof globalThis;
 
 declare let trustedDomains: TrustedDomains;
@@ -171,66 +171,10 @@ const getCurrentDatabasesTokenEndpoint = (database: Database, url: string) => {
     return databases;
 };
 
-const openidWellknownUrlEndWith = '/.well-known/openid-configuration';
-const getCurrentDatabaseDomain = (database: Database, url: string) => {
-    if (url.endsWith(openidWellknownUrlEndWith)) {
-        return null;
-    }
-    for (const [key, currentDatabase] of Object.entries<OidcConfig>(database)) {
-        const oidcServerConfiguration = currentDatabase.oidcServerConfiguration;
-
-        if (!oidcServerConfiguration) {
-            continue;
-        }
-
-        if (oidcServerConfiguration.tokenEndpoint && url === oidcServerConfiguration.tokenEndpoint) {
-            continue;
-        }
-        if (oidcServerConfiguration.revocationEndpoint && url === oidcServerConfiguration.revocationEndpoint) {
-            continue;
-        }
-
-        const domainsToSendTokens = oidcServerConfiguration.userInfoEndpoint
-            ? [
-                oidcServerConfiguration.userInfoEndpoint, ...trustedDomains[key],
-            ]
-            : [...trustedDomains[key]];
-
-        let hasToSendToken = false;
-        if (domainsToSendTokens.find((f) => f === acceptAnyDomainToken)) {
-            hasToSendToken = true;
-        } else {
-            for (let i = 0; i < domainsToSendTokens.length; i++) {
-                let domain = domainsToSendTokens[i];
-
-                if (typeof domain === 'string') {
-                    domain = new RegExp(`^${domain}`);
-                }
-
-                if (domain.test?.(url)) {
-                    hasToSendToken = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasToSendToken) {
-            if (!currentDatabase.tokens) {
-                return null;
-            }
-            return currentDatabase;
-        }
-    }
-
-    return null;
-};
-
 const REFRESH_TOKEN = 'REFRESH_TOKEN_SECURED_BY_OIDC_SERVICE_WORKER';
 const ACCESS_TOKEN = 'ACCESS_TOKEN_SECURED_BY_OIDC_SERVICE_WORKER';
 const NONCE_TOKEN = 'NONCE_SECURED_BY_OIDC_SERVICE_WORKER';
 const CODE_VERIFIER = 'CODE_VERIFIER_SECURED_BY_OIDC_SERVICE_WORKER';
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const keepAliveAsync = async (event: FetchEvent) => {
     const originalRequest = event.request;
@@ -256,7 +200,7 @@ const handleFetch = async (event:FetchEvent) => {
         return;
     }
 
-    const currentDatabaseForRequestAccessToken = getCurrentDatabaseDomain(database, originalRequest.url);
+    const currentDatabaseForRequestAccessToken = getCurrentDatabaseDomain(database, originalRequest.url,trustedDomains);
     if (currentDatabaseForRequestAccessToken && currentDatabaseForRequestAccessToken.tokens && currentDatabaseForRequestAccessToken.tokens.access_token) {
         while (currentDatabaseForRequestAccessToken.tokens && !isTokensValid(currentDatabaseForRequestAccessToken.tokens)) {
             await sleep(200);
