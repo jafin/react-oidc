@@ -1,107 +1,13 @@
-type Domain = string | RegExp;
-
-type TrustedDomains = {
-    [key: string]: Domain[]
-}
-type OidcServerConfiguration = {
-    revocationEndpoint: string;
-    issuer: string;
-    authorizationEndpoint: string;
-    tokenEndpoint: string;
-    userInfoEndpoint: string;
-}
-
-type OidcConfiguration = {
-    token_renew_mode: string;
-    service_worker_convert_all_requests_to_cors: boolean;
-}
-
-
-// Uncertain why the Headers interface in lib.webworker.d.ts does not have a keys() function, so extending
-interface FetchHeaders extends Headers {
-    keys(): string[];
-}
-
-type Status = 'LOGGED' | 'LOGGED_IN' | 'LOGGED_OUT' | 'NOT_CONNECTED' | 'LOGOUT_FROM_ANOTHER_TAB' | 'SESSION_LOST' | 'REQUIRE_SYNC_TOKENS' | 'FORCE_REFRESH' | null;
-type MessageEventType = 'clear' | 'init' | 'setState' | 'getState' | 'setCodeVerifier' | 'getCodeVerifier' | 'setSessionState' | 'getSessionState' | 'setNonce';
-
-type MessageData = {
-    status: Status;
-    oidcServerConfiguration: OidcServerConfiguration;
-    oidcConfiguration: OidcConfiguration;
-    where: string;
-    state: string;
-    codeVerifier: string;
-    sessionState: string;
-    nonce: Nonce;
-}
-
-type MessageEventData = {
-    configurationName: string;
-    type: MessageEventType;
-    data: MessageData;
-}
-
-type Nonce = {
-    nonce: string;
-} | null;
-
-type OidcConfig = {
-    configurationName: string;
-    tokens: Tokens | null;
-    status: Status;
-    state: string | null;
-    codeVerifier: string | null;
-    nonce: Nonce;
-    oidcServerConfiguration: OidcServerConfiguration | null;
-    oidcConfiguration?: OidcConfiguration;
-    sessionState?: string | null;
-    items?: MessageData;
-}
-
-type IdTokenPayload = {
-    iss: string;
-    /**
-     * (Expiration Time) Claim
-     */
-    exp: number;
-    /**
-     * (Issued At) Claim
-     */
-    iat: number;
-    nonce: string | null;
-}
-
-type AccessTokenPayload = {
-    exp: number;
-    sub: string;
-}
-
-type Tokens = {
-    issued_at: number;
-    access_token: string;
-    accessTokenPayload: AccessTokenPayload | null;
-    id_token: null | string;
-    idTokenPayload: IdTokenPayload;
-    refresh_token?: string;
-    expiresAt: number;
-    expires_in: number;
-};
-
-type Database = {
-    [key: string]: OidcConfig
-}
-
+import { acceptAnyDomainToken, scriptFilename } from './constants';
+import { TrustedDomains, Database, Tokens, OidcServerConfiguration, OidcConfig, OidcConfiguration, MessageEventData } from './types';
+import {checkDomain, countLetter, isTokensValid, parseJwt, serializeHeaders} from './utils';
 const _self = self as ServiceWorkerGlobalScope & typeof globalThis;
 
 declare let trustedDomains: TrustedDomains;
 
-const scriptFilename = 'OidcTrustedDomains.js'; /* global trustedDomains */
 _self.importScripts(scriptFilename);
 
 const id = Math.round(new Date().getTime() / 1000).toString();
-
-const acceptAnyDomainToken = '*';
 
 const keepAliveJsonFilename = 'OidcKeepAliveServiceWorker.json';
 const handleInstall = (event: ExtendableEvent) => {
@@ -113,7 +19,6 @@ const handleActivate = (event: ExtendableEvent) => {
     console.log('[OidcServiceWorker] service worker activated ' + id);
     event.waitUntil(_self.clients.claim());
 };
-
 
 let currentLoginCallbackConfigurationName: string | null = null;
 const database: Database = {
@@ -128,13 +33,6 @@ const database: Database = {
     }
 };
 
-const countLetter = (str: string, find: string) => {
-    return (str.split(find)).length - 1;
-};
-
-const b64DecodeUnicode = (str: string) =>
-    decodeURIComponent(Array.prototype.map.call(atob(str), (c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-const parseJwt = (token: string)  => JSON.parse(b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/')));
 const extractTokenPayload = (token: string) => {
     try {
         if (!token) {
@@ -151,17 +49,7 @@ const extractTokenPayload = (token: string) => {
     return null;
 };
 
-const computeTimeLeft = (refreshTimeBeforeTokensExpirationInSecond: number, expiresAt: number) => {
-    const currentTimeUnixSecond = new Date().getTime() / 1000;
-    return Math.round(((expiresAt - refreshTimeBeforeTokensExpirationInSecond) - currentTimeUnixSecond));
-};
 
-const isTokensValid = (tokens: Tokens | null) => {
-    if (!tokens) {
-        return false;
-    }
-    return computeTimeLeft(0, tokens.expiresAt) > 0;
-};
 
 // https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation (excluding rules #1, #4, #5, #7, #8, #12, and #13 which did not apply).
 // https://github.com/openid/AppAuth-JS/issues/65
@@ -337,16 +225,6 @@ const getCurrentDatabaseDomain = (database: Database, url: string) => {
     return null;
 };
 
-const serializeHeaders = (headers: Headers) => {
-    const headersObj: Record<string,string> = {};
-    for (const key of (headers as FetchHeaders).keys()) {
-        if (headers.has(key)) {
-            headersObj[key] = headers.get(key) as string;
-        }
-    }
-    return headersObj;
-};
-
 const REFRESH_TOKEN = 'REFRESH_TOKEN_SECURED_BY_OIDC_SERVICE_WORKER';
 const ACCESS_TOKEN = 'ACCESS_TOKEN_SECURED_BY_OIDC_SERVICE_WORKER';
 const NONCE_TOKEN = 'NONCE_SECURED_BY_OIDC_SERVICE_WORKER';
@@ -474,6 +352,7 @@ const handleFetch = async (event:FetchEvent) => {
                         integrity: clonedRequest.integrity,
                     }).then(hideTokens(currentDatabase));
                 }
+                return undefined;
             });
             response.then(r => {
                 if (r !== undefined) {
@@ -616,23 +495,3 @@ _self.addEventListener('activate', handleActivate);
 _self.addEventListener('fetch', handleFetch);
 _self.addEventListener('message', handleMessage);
 
-const checkDomain = (domains: Domain[], endpoint: string) => {
-    if (!endpoint) {
-        return;
-    }
-
-    const domain = domains.find((domain) => {
-        let testable: RegExp;
-
-        if (typeof domain === 'string') {
-            testable = new RegExp(`^${domain}`);
-        } else {
-            testable = domain;
-        }
-
-        return testable.test?.(endpoint);
-    });
-    if (!domain) {
-        throw new Error('Domain ' + endpoint + ' is not trusted, please add domain in ' + scriptFilename);
-    }
-};
