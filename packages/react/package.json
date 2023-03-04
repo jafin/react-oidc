@@ -31,7 +31,7 @@
     "next"
   ],
   "scripts": {
-    "copy": "copyfiles -f ./dist/OidcServiceWorker.js ./public && copyfiles -f -soft ./dist/OidcTrustedDomains.js ./public",
+    "copy": "copyfiles -f ./dist/OidcServiceWorker.js ./dist/*.ts ./dist/*.map ./public && copyfiles -f -soft ./dist/OidcTrustedDomains.js ./public",
     "start": "npm run build:service-worker && npm run copy && cross-env PORT=4200 react-scripts start",
     "build": "npm run build:service-worker && npm run copy && react-scripts build",
     "test": "react-scripts test --coverage",
