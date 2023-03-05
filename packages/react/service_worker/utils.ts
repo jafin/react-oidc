@@ -8,11 +8,8 @@ import {
   Domain,
   FetchHeaders,
   OidcConfig,
-  Tokens,
   TrustedDomains,
 } from './types';
-
-declare let trustedDomains: TrustedDomains;
 
 const serializeHeaders = (headers: Headers) => {
   const headersObj: Record<string, string> = {};
@@ -75,26 +72,11 @@ const checkDomain = (domains: Domain[], endpoint: string) => {
   }
 };
 
-const computeTimeLeft = (
-  refreshTimeBeforeTokensExpirationInSecond: number,
-  expiresAt: number
+const getCurrentDatabaseDomain = (
+  database: Database,
+  url: string,
+  trustedDomains: TrustedDomains
 ) => {
-  const currentTimeUnixSecond = new Date().getTime() / 1000;
-  return Math.round(
-    expiresAt -
-      refreshTimeBeforeTokensExpirationInSecond -
-      currentTimeUnixSecond
-  );
-};
-
-const isTokensValid = (tokens: Tokens | null) => {
-  if (!tokens) {
-    return false;
-  }
-  return computeTimeLeft(0, tokens.expiresAt) > 0;
-};
-
-const getCurrentDatabaseDomain = (database: Database, url: string, trustedDomains: TrustedDomains) => {
   if (url.endsWith(openidWellknownUrlEndWith)) {
     return null;
   }
@@ -150,6 +132,30 @@ const getCurrentDatabaseDomain = (database: Database, url: string, trustedDomain
   return null;
 };
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export { serializeHeaders, countLetter, parseJwt, checkDomain, isTokensValid, getCurrentDatabaseDomain, sleep };
+const extractTokenPayload = (token: string) => {
+  try {
+    if (!token) {
+      return null;
+    }
+    if (countLetter(token, '.') === 2) {
+      return parseJwt(token);
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.warn(e);
+  }
+  return null;
+};
+
+export {
+  serializeHeaders,
+  countLetter,
+  parseJwt,
+  checkDomain,
+  getCurrentDatabaseDomain,
+  sleep,
+  extractTokenPayload,
+};

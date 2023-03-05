@@ -21,5 +21,6 @@
     "skipLibCheck": true,
     "types": [] // Don't include the default node types or we'll get conflicts.
   },
-  "include": ["./*.ts"]
+  "include": ["./**/*.ts"],
+  "exclude": ["dist"]
 }

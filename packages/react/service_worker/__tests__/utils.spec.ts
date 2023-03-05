@@ -1,30 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { Tokens, Database } from './types';
+import { Database } from '../types';
 import {
   checkDomain,
   countLetter,
   getCurrentDatabaseDomain,
-  isTokensValid,
   parseJwt,
   serializeHeaders,
   sleep,
-} from './utils';
-
-const createToken = (expires: number, issued_at: number): Tokens => {
-  return {
-    expiresAt: expires,
-    issued_at: issued_at,
-    expires_in: 60,
-    id_token: null,
-    accessTokenPayload: null,
-    access_token: '',
-    idTokenPayload: { iss: '', exp: 0, iat: 0, nonce: null },
-  };
-};
-
-const currentTimeUnixSeconds = (): number => {
-  return new Date().getTime() / 1000;
-};
+} from '../utils';
+import { createToken, currentTimeUnixSeconds } from './testHelper';
 
 describe('utils', () => {
   it('can serialize headers', () => {
@@ -48,32 +32,6 @@ describe('utils', () => {
       name: 'John Doe',
       iat: 1516239022,
     });
-  });
-
-  it('can check ExpiredToken', () => {
-    expect(
-      isTokensValid(
-        createToken(
-          currentTimeUnixSeconds() - 60,
-          currentTimeUnixSeconds() - 120
-        )
-      )
-    ).toBeFalsy();
-  });
-
-  it('can check ExpiredToken', () => {
-    expect(
-      isTokensValid(
-        createToken(
-          currentTimeUnixSeconds() + 60,
-          currentTimeUnixSeconds() - 120
-        )
-      )
-    ).toBeTruthy();
-  });
-
-  it('can check null token', () => {
-    expect(isTokensValid(null)).toBeFalsy();
   });
 
   describe('checkDomains', () => {
@@ -110,7 +68,7 @@ describe('utils', () => {
     });
   });
 
-  it('can sleep', async ()=> {
+  it('can sleep', async () => {
     const start = currentTimeUnixSeconds();
     const sleepInSecs = 0.5;
     await sleep(sleepInSecs * 1000);
@@ -119,17 +77,21 @@ describe('utils', () => {
   });
 
   describe('getCurrentDomainDomain', () => {
-
     it('can get current database domain', () => {
-
       let trustedDomains = {
-        default:["https://demo.duendesoftware.com", "https://kdhttps.auth0.com"],
-      }
+        default: [
+          'https://demo.duendesoftware.com',
+          'https://kdhttps.auth0.com',
+        ],
+      };
 
       const database: Database = {
         default: {
           configurationName: 'default',
-          tokens: createToken(currentTimeUnixSeconds() + 60, currentTimeUnixSeconds() -120),
+          tokens: createToken(
+            currentTimeUnixSeconds() + 60,
+            currentTimeUnixSeconds() - 120
+          ),
           status: 'LOGGED',
           state: null,
           codeVerifier: null,
@@ -146,7 +108,11 @@ describe('utils', () => {
           items: undefined,
         },
       };
-      const result = getCurrentDatabaseDomain(database, 'https://demo.duendesoftware.com/userinfo',trustedDomains);
+      const result = getCurrentDatabaseDomain(
+        database,
+        'https://demo.duendesoftware.com/userinfo',
+        trustedDomains
+      );
       expect(result?.configurationName).toBe('default');
     });
   });
