@@ -19,7 +19,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "types": [] // Don't include the default node types or we'll get conflicts.
+    "types": [] // Don't include the default node types or will get conflicts.
   },
-  "include": ["./*.ts"]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "dist", "build", "coverage", "scripts"]
 }
