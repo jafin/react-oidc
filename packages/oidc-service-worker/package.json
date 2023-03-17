@@ -20,7 +20,7 @@
     "oauth"
   ],
   "scripts": {
-    "copy": "copyfiles -f ./src/OidcTrustedDomains.js ./dist/",
+    "copy": "cpy --flat ./src/OidcTrustedDomains.js ./dist/",
     "build": "tsc && vite build && npm run copy",
     "test": "vitest run",
     "test:watch": "vitest --coverage",

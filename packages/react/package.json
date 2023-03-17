@@ -31,8 +31,8 @@
     "next"
   ],
   "scripts": {
-    "copy:dist": "copyfiles -f ../oidc-service-worker/dist/* ./dist/oidc-service-worker && copyfiles -f ../oidc-service-worker/dist/utils/* ./dist/oidc-service-worker/utils",
-    "copy:public": "copyfiles -f ../oidc-service-worker/dist/*.js ./public",
+    "copy:dist": "cpy ../oidc-service-worker/dist ./dist/oidc-service-worker",
+    "copy:public": "cpy --flat ../oidc-service-worker/dist/*.js ./public",
     "start": "npm run copy:public && cross-env PORT=4200 react-scripts start",
     "build": "npm run copy:public && react-scripts build",
     "test": "react-scripts test --coverage",
@@ -44,7 +44,6 @@
   },
   "dependencies": {
     "base64-js": "1.5.1"
-
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
@@ -60,6 +59,7 @@
     "@typescript-eslint/parser": "^5.40.1",
     "bootstrap": "4.6.1",
     "copyfiles": "2.4.1",
+    "cpy-cli": "^4.2.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.26.0",
     "eslint-config-standard": "^17.0.0",

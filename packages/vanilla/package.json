@@ -25,6 +25,7 @@
     "@axa-fr/oidc-service-worker": "*",
     "@types/node": "17.0.15",
     "copyfiles": "2.4.1",
+    "cpy-cli": "^4.2.0",
     "rimraf": "3.0.2",
     "typescript": "4.5.5"
   },
@@ -38,8 +39,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf src",
-    "copy:dist": "copyfiles -f ../oidc-service-worker/dist/* ./dist/oidc-service-worker && copyfiles -f ../oidc-service-worker/dist/utils/* ./dist/oidc-service-worker/utils",
-    "copy": "copyfiles -f ../react/src/oidc/vanilla/*.ts ./src",
+    "copy:dist": "cpy ../oidc-service-worker/dist ./dist/oidc-service-worker",
+    "copy": "cpy --flat ../react/src/oidc/vanilla/*.ts ./src",
     "prepare": "npm run clean && npm run copy && tsc --build && npm run copy:dist",
     "postinstall": "node ./bin/copy.js"
   },
