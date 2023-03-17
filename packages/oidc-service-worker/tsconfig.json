@@ -9,7 +9,7 @@
     "moduleResolution": "Node",
     "sourceMap": true,
     "declarationMap": true,
-    "outDir": "../dist",
+    "outDir": "./dist",
     // From https://joshuatz.com/posts/2021/strongly-typed-service-workers/
     "lib": ["webworker", "ESNext"],
     "resolveJsonModule": true,
@@ -21,6 +21,6 @@
     "skipLibCheck": true,
     "types": [] // Don't include the default node types or will get conflicts.
   },
-  "include": ["./**/*.ts"],
+  "include": ["./src/**/*.ts"],
   "exclude": ["node_modules", "dist", "build", "coverage", "scripts"]
 }

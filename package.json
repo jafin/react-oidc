@@ -2,7 +2,10 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/vanilla",
+    "packages/react",
+    "packages/oidc-service-worker",
+    "packages/vanilla-demo"
   ],
   "devDependencies": {
     "lerna": "^6.5.1"

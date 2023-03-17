@@ -22,6 +22,7 @@
     "base64-js": "1.5.1"
   },
   "devDependencies": {
+    "@axa-fr/oidc-service-worker": "*",
     "@types/node": "17.0.15",
     "copyfiles": "2.4.1",
     "rimraf": "3.0.2",
@@ -37,8 +38,9 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf src",
-    "copy": "copyfiles -f ../react/src/oidc/vanilla/*.ts ./src && copyfiles -f ../react/service_worker/OidcTrustedDomains.js ../react/service_worker/dist/OidcServiceWorker.js ./src",
-    "prepare": "npm run clean && npm run copy && tsc --build \"./tsconfig.json\" && copyfiles -f ./src/OidcServiceWorker.js ./dist && copyfiles -f ./src/OidcTrustedDomains.js ./dist",
+    "copy:dist": "copyfiles -f ../oidc-service-worker/dist/* ./dist/oidc-service-worker && copyfiles -f ../oidc-service-worker/dist/utils/* ./dist/oidc-service-worker/utils",
+    "copy": "copyfiles -f ../react/src/oidc/vanilla/*.ts ./src",
+    "prepare": "npm run clean && npm run copy && tsc --build && npm run copy:dist",
     "postinstall": "node ./bin/copy.js"
   },
   "license": "MIT",
