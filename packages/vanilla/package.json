@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf src",
-    "copy:dist": "cpy ../oidc-service-worker/dist ./dist/oidc-service-worker",
+    "copy:dist": "cpy ../oidc-service-worker/dist/** ./dist/oidc-service-worker",
     "copy": "cpy --flat ../react/src/oidc/vanilla/*.ts ./src",
     "prepare": "npm run clean && npm run copy && tsc --build && npm run copy:dist",
     "postinstall": "node ./bin/copy.js"
