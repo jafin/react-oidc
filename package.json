@@ -18,6 +18,7 @@
     "test": "npm run test --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "version": "changeset version",
+    "changeset": "changeset",
     "release": "changeset publish"
   },
   "devDependencies": {
