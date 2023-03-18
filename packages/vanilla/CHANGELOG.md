@@ -1,5 +1,11 @@
 # @finchy/vanilla-oidc
 
+## 6.21.0
+
+### Minor Changes
+
+- 9ae794e: Fix build
+
 ## 6.20.0
 
 ### Minor Changes

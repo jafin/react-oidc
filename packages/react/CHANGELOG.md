@@ -1,5 +1,11 @@
 # @finchy/react-oidc
 
+## 6.22.0
+
+### Minor Changes
+
+- 9ae794e: Fix build
+
 ## 6.21.0
 
 ### Minor Changes
