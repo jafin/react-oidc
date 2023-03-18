@@ -39,7 +39,7 @@ jobs:
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.repository == 'axa-fr/react-oidc'
     runs-on: ubuntu-latest
     name: Close Pull Request Job
     steps:
