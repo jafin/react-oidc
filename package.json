@@ -11,7 +11,7 @@
     "packages/vanilla-demo"
   ],
   "repository": {
-    "url": "https://github.com/jafin/react-oidc",
+    "url": "git+https://github.com/jafin/react-oidc.git",
     "type": "git"
   },
   "scripts": {
@@ -28,7 +28,11 @@
     "release:canary": "lerna publish --canary --preid next --dist-tag next --force-publish='*' --no-push --no-git-tag-version --yes"
   },
   "devDependencies": {
+    "@release-it-plugins/workspaces": "^3.2.0",
     "lerna": "^6.5.1",
     "release-it": "^15.9.0"
+  },
+  "engines": {
+    "node": "16.* || >= 18"
   }
 }
