@@ -1,5 +1,11 @@
 # @finchy/vanilla-oidc
 
+## 6.19.0
+
+### Minor Changes
+
+- 7a6736e: Another PR
+
 ## 6.18.0
 
 ### Minor Changes
