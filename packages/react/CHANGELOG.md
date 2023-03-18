@@ -1,5 +1,11 @@
 # @finchy/react-oidc
 
+## 6.23.0
+
+### Minor Changes
+
+- f7ed55e: New feature
+
 ## 6.22.0
 
 ### Minor Changes
