@@ -41,7 +41,6 @@
     "clean": "rimraf dist && rimraf service_worker/dist",
     "postinstall": "node ./bin/copy.cjs",
     "prepare": "npm run clean && tsc --build && npm run build && npm run copy:dist",
-    "release": "npm run prepare && changeset publish",
     "lint": "eslint src"
   },
   "dependencies": {
