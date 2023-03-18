@@ -1,5 +1,11 @@
 # @finchy/vanilla-oidc
 
+## 6.20.0
+
+### Minor Changes
+
+- 411e343: Fix Script
+
 ## 6.19.0
 
 ### Minor Changes
