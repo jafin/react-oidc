@@ -1,5 +1,11 @@
 # @finchy/react-oidc
 
+## 6.19.0
+
+### Minor Changes
+
+- 06e0d30: I made a small bump
+
 ## 6.18.0
 
 ### Minor Changes
