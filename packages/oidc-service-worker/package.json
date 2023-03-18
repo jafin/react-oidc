@@ -1,6 +1,6 @@
 {
   "name": "@axa-fr/oidc-service-worker",
-  "version": "6.16.1",
+  "version": "6.17.0",
   "private": true,
   "type": "module",
   "main": "dist/OidcServiceWorker.js",
