@@ -1,13 +1,34 @@
 {
   "name": "root",
   "private": true,
+  "version": "1.0.0",
+  "description": "Root package for the project",
+  "license": "MIT",
   "workspaces": [
     "packages/vanilla",
     "packages/react",
     "packages/oidc-service-worker",
     "packages/vanilla-demo"
   ],
+  "repository": {
+    "url": "https://github.com/jafin/react-oidc",
+    "type": "git"
+  },
+  "scripts": {
+    "versionup": "lerna version --conventional-commits --no-git-tag-version",
+    "versionup:patch": "lerna version patch --conventional-commits --no-git-tag-version",
+    "versionup:minor": "lerna version minor --conventional-commits --no-git-tag-version",
+    "versionup:major": "lerna version major --conventional-commits --no-git-tag-version",
+    "postversionup": "npm run commit-version",
+    "postversionup:patch": "npm run commit-version",
+    "postversionup:minor": "npm run commit-version",
+    "postversionup:major": "npm run commit-version",
+    "commit-version": "git add . && git commit -m \"chore(release): publish `node -p 'require(\"./lerna.json\").version'`\"",
+    "release": "lerna publish from-package",
+    "release:canary": "lerna publish --canary --preid next --dist-tag next --force-publish='*' --no-push --no-git-tag-version --yes"
+  },
   "devDependencies": {
-    "lerna": "^6.5.1"
+    "lerna": "^6.5.1",
+    "release-it": "^15.9.0"
   }
 }
