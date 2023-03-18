@@ -5,9 +5,9 @@
   "description": "Root package for the project",
   "license": "MIT",
   "workspaces": [
+    "packages/oidc-service-worker",
     "packages/vanilla",
     "packages/react",
-    "packages/oidc-service-worker",
     "packages/vanilla-demo"
   ],
   "repository": {
@@ -25,9 +25,12 @@
     "postversionup:major": "npm run commit-version",
     "commit-version": "git add . && git commit -m \"chore(release): publish `node -p 'require(\"./lerna.json\").version'`\"",
     "release": "lerna publish from-package",
-    "release:canary": "lerna publish --canary --preid next --dist-tag next --force-publish='*' --no-push --no-git-tag-version --yes"
+    "release:canary": "lerna publish --canary --preid next --dist-tag next --force-publish='*' --no-push --no-git-tag-version --yes",
+    "add-changesets": "changeset add",
+    "release-ci": "lerna publish from-package --y --no-verify-access"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.0",
     "@release-it-plugins/workspaces": "^3.2.0",
     "lerna": "^6.5.1",
     "release-it": "^15.9.0"
