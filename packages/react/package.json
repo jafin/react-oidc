@@ -1,6 +1,6 @@
 {
-  "name": "@axa-fr/react-oidc",
-  "version": "6.16.0",
+  "name": "@finchy/react-oidc",
+  "version": "6.18.0",
   "private": false,
   "type": "module",
   "main": "dist/index.js",
@@ -16,7 +16,6 @@
     "bin",
     "src/oidc",
     "src/override",
-    "service_worker",
     "README.md",
     "package.json",
     "package-lock.json"
@@ -32,17 +31,17 @@
     "next"
   ],
   "scripts": {
-    "copy:public": "copyfiles -f ./service_worker/dist/* ./public && copyfiles -f -soft ./dist/OidcTrustedDomains.js ./public",
-    "copy:dist": "copyfiles -f ./service_worker/dist/* ./dist/service_worker && copyfiles -f ./service_worker/dist/utils/* ./dist/service_worker/utils && copyfiles -f ./service_worker/oidcTrustedDomains.js ./dist",
-    "start": "npm run build:service-worker && npm run copy:public && cross-env PORT=4200 react-scripts start",
-    "build": "npm run build:service-worker && npm run copy:public && react-scripts build",
-    "test": "react-scripts test --coverage",
+    "copy:dist": "cpy ../oidc-service-worker/dist/** ./dist/oidc-service-worker/",
+    "copy:public": "cpy --flat ../oidc-service-worker/dist/*.js ./public",
+    "start": "npm run copy:public && cross-env PORT=4200 react-scripts start",
+    "build": "npm run copy:public && react-scripts build",
+    "test": "react-scripts test --coverage --watchAll=false",
+    "test:watch": "react-scripts test --coverage",
     "eject": "react-scripts eject",
     "clean": "rimraf dist && rimraf service_worker/dist",
     "postinstall": "node ./bin/copy.cjs",
-    "test:service-worker": "vitest --root ./service_worker --coverage",
-    "build:service-worker": "tsc -p ./service_worker/tsconfig.json && vite build ./service_worker --config ./vite.serviceWorker.config.js",
-    "prepare": "npm run clean && tsc --build \"./tsconfig.json\" && npm run build && npm run copy:dist",
+    "prepare": "npm run clean && tsc --build && npm run build && npm run copy:dist",
+    "release": "npm run prepare && changeset publish",
     "lint": "eslint src"
   },
   "dependencies": {
@@ -53,15 +52,16 @@
     "react-dom": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
+    "@axa-fr/oidc-service-worker": "6.17.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "13.3.0",
     "@testing-library/user-event": "14.4.3",
     "@types/react": "^18.0.21",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@vitest/coverage-c8": "^0.29.2",
-    "bootstrap": "4.6.1",
+    "bootstrap": "4.6.2",
     "copyfiles": "2.4.1",
+    "cpy-cli": "^4.2.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.26.0",
     "eslint-config-standard": "^17.0.0",
@@ -74,10 +74,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "6.3.0",
     "react-scripts": "5.0.1",
-    "typescript": "4.8.2",
-    "vite": "^4.1.4",
-    "vite-plugin-dts": "^2.0.2",
-    "vitest": "^0.29.2"
+    "typescript": "4.8.2"
   },
   "license": "MIT",
   "publishConfig": {
@@ -95,5 +92,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "gitHead": "209e4aadfb2f50a39f3f8b68afb5e30cfd1a7753"
 }

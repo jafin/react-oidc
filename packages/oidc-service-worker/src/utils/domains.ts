@@ -1,10 +1,9 @@
-import { TrustedDomains } from './../types';
 import {
   acceptAnyDomainToken,
   openidWellknownUrlEndWith,
   scriptFilename,
 } from '../constants';
-import { Database, Domain, OidcConfig } from '../types';
+import { Database, Domain, OidcConfig, TrustedDomains } from './../types';
 
 function checkDomain(domains: Domain[], endpoint: string) {
   if (!endpoint) {
@@ -27,7 +26,7 @@ function checkDomain(domains: Domain[], endpoint: string) {
       'Domain ' +
         endpoint +
         ' is not trusted, please add domain in ' +
-        scriptFilename
+        scriptFilename,
     );
   }
 }
@@ -35,7 +34,7 @@ function checkDomain(domains: Domain[], endpoint: string) {
 const getCurrentDatabaseDomain = (
   database: Database,
   url: string,
-  trustedDomains: TrustedDomains
+  trustedDomains: TrustedDomains,
 ) => {
   if (url.endsWith(openidWellknownUrlEndWith)) {
     return null;

@@ -1,6 +1,7 @@
 # Nextjs @axa-fr/react-oidc demo
 
 ## Getting Started
+
 ```sh
 git clone https://github.com/AxaGuilDEv/react-oidc.git
 cd react-oidc/packages/nextjs-demo
@@ -11,6 +12,7 @@ npm run dev
 To work with NextJS you need to inject your own history surcharge like the sample below.
 
 component/layout.js
+
 ```javascript
 import { OidcProvider } from '@axa-fr/react-oidc';
 import { useRouter } from 'next/router'

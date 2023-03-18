@@ -1,0 +1,31 @@
+{
+  "name": "root",
+  "private": true,
+  "version": "6.16.1",
+  "description": "Root package for the project",
+  "license": "MIT",
+  "workspaces": [
+    "packages/oidc-service-worker",
+    "packages/vanilla",
+    "packages/react",
+    "packages/vanilla-demo"
+  ],
+  "repository": {
+    "url": "git+https://github.com/jafin/react-oidc.git",
+    "type": "git"
+  },
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "version": "changeset version",
+    "changeset": "changeset",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "lerna": "^6.5.1"
+  },
+  "engines": {
+    "node": "16.* || >= 18"
+  }
+}

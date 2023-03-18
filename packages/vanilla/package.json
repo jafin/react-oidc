@@ -1,6 +1,6 @@
 {
-  "name": "@axa-fr/vanilla-oidc",
-  "version": "6.16.0",
+  "name": "@finchy/vanilla-oidc",
+  "version": "6.17.0",
   "private": false,
   "main": "dist/index.js",
   "jsnext:main": "dist/index.js",
@@ -22,8 +22,10 @@
     "base64-js": "1.5.1"
   },
   "devDependencies": {
+    "@axa-fr/oidc-service-worker": "6.17.0",
     "@types/node": "17.0.15",
     "copyfiles": "2.4.1",
+    "cpy-cli": "^4.2.0",
     "rimraf": "3.0.2",
     "typescript": "4.5.5"
   },
@@ -37,13 +39,15 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf src",
-    "copy": "copyfiles -f ../react/src/oidc/vanilla/*.ts ./src && copyfiles -f ../react/service_worker/OidcTrustedDomains.js ../react/service_worker/dist/OidcServiceWorker.js ./src",
-    "prepare": "npm run clean && npm run copy && tsc --build \"./tsconfig.json\" && copyfiles -f ./src/OidcServiceWorker.js ./dist && copyfiles -f ./src/OidcTrustedDomains.js ./dist",
+    "copy:dist": "cpy ../oidc-service-worker/dist/** ./dist/oidc-service-worker",
+    "copy": "cpy --flat ../react/src/oidc/vanilla/*.ts ./src",
+    "prepare": "npm run clean && npm run copy && tsc --build && npm run copy:dist",
     "postinstall": "node ./bin/copy.js"
   },
   "license": "MIT",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "gitHead": "209e4aadfb2f50a39f3f8b68afb5e30cfd1a7753"
 }
