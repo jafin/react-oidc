@@ -21,7 +21,7 @@ jobs:
     # IMPORTANT: prevent this action from running on forks
     environment: react-oidc
     runs-on: ubuntu-latest
-    if: ${{ needs.skip_ci.outputs.canSkip != 'true' }} && github.repository == 'axa-fr/react-oidc'
+    if: needs.skip_ci.outputs.canSkip != 'true' && github.repository == 'axa-fr/react-oidc'
     steps:
       - uses: actions/checkout@v2
         with:
