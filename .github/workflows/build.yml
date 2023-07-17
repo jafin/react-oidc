@@ -51,9 +51,9 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.skip_ci.outputs.canSkip != 'true' && !github.event.pull_request.head.repo.fork
     steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
+      - uses: actions/checkout@v3
+        # with:
+        #   token: ${{ secrets.GIT_TOKEN }}
       
       # - name: Bump version and push tag
       #   id: tag_version
