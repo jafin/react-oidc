@@ -5,9 +5,9 @@ name: React Oidc CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   skip_ci:
@@ -26,25 +26,25 @@ jobs:
         with:
           node-version: 18
 
-      - name: npm ci
-        run: npm ci
-        working-directory: ./packages/react
+      - name: pnpm i
+        run: pnpm i --frozen-lockfile
+        working-directory: ./packages/react-oidc
 
-      - name: npm prepare
-        run: npm run prepare
-        working-directory: ./packages/react
+      - name: pnpm prepare
+        run: pnpm run prepare
+        working-directory: ./packages/react-oidc
 
-      - name: npm test
-        run: npm test -- --run
-        working-directory: ./packages/react
+      - name: pnpm test
+        run: pnpm test -- --run
+        working-directory: ./packages/react-oidc
 
-      - name: npm ci
-        run: npm ci
-        working-directory: ./packages/vanilla
+      - name: pnpm install
+        run: pnpm i --frozen-lockfile
+        working-directory: ./packages/oidc-client
 
-      - name: npm prepare
-        run: npm run prepare
-        working-directory: ./packages/vanilla
+      - name: pnpm prepare
+        run: pnpm run prepare
+        working-directory: ./packages/oidc-client
 
   build:
     environment: react-oidc
@@ -57,7 +57,7 @@ jobs:
       
       - name: Bump version and push tag
         id: tag_version
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -67,47 +67,47 @@ jobs:
           node-version: 18
 
       - name: npm version ${{ steps.tag_version.outputs.new_tag }}
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         run: npm version ${{ steps.tag_version.outputs.new_tag }}
-        working-directory: ./packages/react
+        working-directory: ./packages/react-oidc
       
-      - name: npm ci
-        run: npm ci
-        working-directory: ./packages/react
+      - name: pnpm i
+        run: pnpm i --frozen-lockfile
+        working-directory: ./packages/react-oidc
 
-      - name: npm prepare
-        run: npm run prepare
-        working-directory: ./packages/react
+      - name: pnpm prepare
+        run: pnpm run prepare
+        working-directory: ./packages/react-oidc
         
-      - name: npm test
-        run: npm test -- --run
-        working-directory: ./packages/react
+      - name: pnpm test
+        run: pnpm test -- --run
+        working-directory: ./packages/react-oidc
         
       - id: publish-react
         uses: JS-DevTools/npm-publish@v1
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/react/package.json
+          package: ./packages/react-oidc/package.json
           
-      - name: npm version ${{ steps.tag_version.outputs.new_tag }}
-        run: npm version ${{ steps.tag_version.outputs.new_tag }}
-        working-directory: ./packages/vanilla
+      - name: pnpm version ${{ steps.tag_version.outputs.new_tag }}
+        run: pnpm version ${{ steps.tag_version.outputs.new_tag }}
+        working-directory: ./packages/oidc-client
 
-      - name: npm ci
-        run: npm ci
-        working-directory: ./packages/vanilla
+      - name: pnpm install
+        run: pnpm i --frozen-lockfile
+        working-directory: ./packages/oidc-client
 
-      - name: npm prepare
-        run: npm run prepare
-        working-directory: ./packages/vanilla
+      - name: pnpm prepare
+        run: pnpm run prepare
+        working-directory: ./packages/oidc-client
 
-      - id: publish-vanilla
+      - id: publish-oidc-client
         uses: JS-DevTools/npm-publish@v1
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/vanilla/package.json
+          package: ./packages/oidc-client/package.json
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -124,7 +124,7 @@ jobs:
             
       - name: Commit updates package.json
         uses: stefanzweifel/git-auto-commit-action@v4
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         with:
           commit_message: "[skip ci] Update version package.json"
           commit_user_name: GitHub
@@ -134,7 +134,7 @@ jobs:
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
