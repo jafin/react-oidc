@@ -210,6 +210,12 @@ importers:
       '@axa-fr/oidc-client-service-worker':
         specifier: workspace:*
         version: link:../oidc-client-service-worker
+      '@testing-library/dom':
+        specifier: ^9.3.1
+        version: 9.3.1
+      '@testing-library/react':
+        specifier: 13.3.0
+        version: 13.3.0(react-dom@18.2.0)(react@18.2.0)
       '@vitest/coverage-v8':
         specifier: ^0.33.0
         version: 0.33.0(vitest@0.33.0)
