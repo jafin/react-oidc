@@ -21,28 +21,37 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.skip_ci.outputs.canSkip != 'true' && github.event.pull_request.head.repo.fork
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: pnpm i
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8.5.1
+          run_install: false
+  
+      - name: Install dependencies (react-oidc)
         run: pnpm i --frozen-lockfile
         working-directory: ./packages/react-oidc
 
-      - name: pnpm prepare
+      - name: Run prepare (react-oidc)
         run: pnpm run prepare
         working-directory: ./packages/react-oidc
 
-      - name: pnpm test
+      - name: Run test (react-oidc)
         run: pnpm test -- --run
         working-directory: ./packages/react-oidc
 
-      - name: pnpm install
+      - name: Install dependencies (oidc-client)
         run: pnpm i --frozen-lockfile
         working-directory: ./packages/oidc-client
 
-      - name: pnpm prepare
+      - name: pnpm prepare (oidc-client)
         run: pnpm run prepare
         working-directory: ./packages/oidc-client
 
@@ -62,24 +71,28 @@ jobs:
       #   with:
       #     github_token: ${{ secrets.GITHUB_TOKEN }}
       
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: npm version ${{ steps.tag_version.outputs.new_tag }}
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.5.1
+  
+      - name: pnpm version ${{ steps.tag_version.outputs.new_tag }}
         if: github.ref == 'refs/heads/main'
-        run: npm version ${{ steps.tag_version.outputs.new_tag }}
+        run: pnpm version ${{ steps.tag_version.outputs.new_tag }}
         working-directory: ./packages/react-oidc
       
-      - name: pnpm i
+      - name: Install dependencies (react-oidc)
         run: pnpm i --frozen-lockfile
         working-directory: ./packages/react-oidc
 
-      - name: pnpm prepare
+      - name: pnpm prepare (react-oidc)
         run: pnpm run prepare
         working-directory: ./packages/react-oidc
         
-      - name: pnpm test
+      - name: pnpm test (react-oidc)
         run: pnpm test -- --run
         working-directory: ./packages/react-oidc
         
@@ -94,11 +107,11 @@ jobs:
         run: pnpm version ${{ steps.tag_version.outputs.new_tag }}
         working-directory: ./packages/oidc-client
 
-      - name: pnpm install
+      - name: Install dependencies (oidc-client)
         run: pnpm i --frozen-lockfile
         working-directory: ./packages/oidc-client
 
-      - name: pnpm prepare
+      - name: pnpm prepare (oidc-client)
         run: pnpm run prepare
         working-directory: ./packages/oidc-client
 
