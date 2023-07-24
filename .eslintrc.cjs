@@ -2,7 +2,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   root: true,
   extends: [
-    'standard',
+    // 'standard',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'eslint:recommended',
