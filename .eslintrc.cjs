@@ -9,14 +9,14 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     //'plugin:@typescript-eslint/recommended-type-checked', //ideally we want this on
-    // 'plugin:@typescript-eslint/stylistic-type-checked',    
+    // 'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:import/typescript',
     'plugin:jsx-a11y/recommended',
     'prettier', // must be last
   ],
-  plugins: ['@typescript-eslint','simple-import-sort', 'testing-library','react', 'prettier'],
+  plugins: ['@typescript-eslint', 'simple-import-sort', 'testing-library', 'react', 'prettier'],
   parserOptions: {
-    project: ['./tsconfig.eslint.json','./packages/*/tsconfig.eslint.json'],
+    project: ['./tsconfig.eslint.json', './packages/*/tsconfig.eslint.json'],
     ecmaVersion: 2022,
     sourceType: 'module',
     ecmaFeatures: {

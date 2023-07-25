@@ -42,4 +42,4 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
-          prettier: true
+          prettier: false #runs part of eslint
