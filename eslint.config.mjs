@@ -31,10 +31,13 @@ export default [{
         "examples/**/dist/**/*",
         "examples/**/OidcTrustedDomains.js",
         "examples/**/OidcServiceWorker.js",
+        "examples/**/nextjs-demo/**",
         "scripts/**/*",
         "**/.github",
         "**/.changeset",
         "**/vite.config.js",
+        "**/webpack-runtime.js",
+        "**/.prettierrc.cjs",
     ],
 }, ...fixupConfigRules(compat.extends(
     "plugin:react/recommended",
@@ -72,7 +75,7 @@ export default [{
 
     settings: {
         react: {
-            version: "detect",
+            version: "18",
         },
 
         "import/resolver": {
