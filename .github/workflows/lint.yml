@@ -43,3 +43,4 @@ jobs:
         with:
           eslint: true
           prettier: false #runs part of eslint
+          autofix: false  #does not work well with pull requests https://github.com/wearerequired/lint-action?tab=readme-ov-file#limitations

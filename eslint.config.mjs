@@ -49,7 +49,7 @@ export default [{
     plugins: {
         "@typescript-eslint": fixupPluginRules(typescriptEslint),
         "simple-import-sort": simpleImportSort,
-        "testing-library": testingLibrary,
+        //"testing-library": testingLibrary,  //Not compatible with ESLint9 yet https://github.com/jsx-eslint/eslint-plugin-react/issues/3699
         react: fixupPluginRules(react),
         prettier,
     },
@@ -170,17 +170,21 @@ export default [{
             ignore: ["jsx", "global"],
         }],
     },
-}, ...compat.extends("plugin:testing-library/react").map(config => ({
-    ...config,
-    files: ["**/?(*.)+(spec|test).[jt]s?(x)"],
-})), {
-    files: ["**/?(*.)+(spec|test).[jt]s?(x)"],
+}, 
+//Not compatible with ESLint9 yet https://github.com/jsx-eslint/eslint-plugin-react/issues/3699
+// ...compat.extends("plugin:testing-library/react").map(config => ({
+//     ...config,
+//     files: ["**/?(*.)+(spec|test).[jt]s?(x)"],
+// })), {
+//     files: ["**/?(*.)+(spec|test).[jt]s?(x)"],
 
-    rules: {
-        // "testing-library/await-async-query": "error",
-        // "testing-library/no-await-sync-query": "error",
-        // "testing-library/no-debugging-utils": "warn",
-        // "testing-library/no-dom-import": "off",
-        // "testing-library/no-unnecessary-act": "off",
-    },
-}];
+//     rules: {
+//         "testing-library/no-container": "off"
+//         "testing-library/await-async-query": "error",
+//         "testing-library/no-await-sync-query": "error",
+//         testing-library/no-debugging-utils": "off",
+//         "testing-library/no-dom-import": "off",
+//         "testing-library/no-unnecessary-act": "off",
+//     },
+// }
+];
