@@ -39,8 +39,12 @@ jobs:
         run: pnpm i
 
       - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true
-          prettier: false #runs part of eslint
-          autofix: false  #does not work well with pull requests https://github.com/wearerequired/lint-action?tab=readme-ov-file#limitations
+        run: pnpm run lint
+
+      # Currently incompatible with ESlint 9 (https://github.com/wearerequired/lint-action/pull/799)
+      # - name: Run linters
+      #   uses: wearerequired/lint-action@v2
+      #   with:
+      #     eslint: true
+      #     prettier: false #runs part of eslint
+      #     autofix: false  #does not work well with pull requests https://github.com/wearerequired/lint-action?tab=readme-ov-file#limitations
