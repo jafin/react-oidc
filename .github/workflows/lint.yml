@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Run linters
+      - name: Run lint
         run: pnpm run lint
 
       # Currently incompatible with ESlint 9 (https://github.com/wearerequired/lint-action/pull/799)
